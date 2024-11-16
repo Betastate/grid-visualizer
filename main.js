@@ -17,8 +17,8 @@ const images = {
     grass: {
         url: "img/grass.png"
     },
-    grass2: {
-        url: "img/grass2.png"
+    water: {
+        url: "img/water.png"
     }
 };
 const imageNames = Object.keys(images);
