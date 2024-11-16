@@ -1,13 +1,13 @@
 let canvas, ctx;
 
 let grid = []
-let cameraPos = { x: 50, y: 50 }
+let cameraPos = { x: 10, y: 10 }
 const mousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
 const settings = {
     cellSize: 128,
     mapSize: {
-        x: 100,
-        y: 100,
+        x: 50,
+        y: 20,
     },
     scrollSpeed: 0.05,
     scrollMargin: 30,
@@ -98,17 +98,17 @@ function loadingDone() {
 function update() {
     // Scrolling the map
     if (mousePos.x < settings.scrollMargin) {
-        cameraPos.x += settings.scrollSpeed * (128 / settings.cellSize);
+        cameraPos.x -= settings.scrollSpeed * (128 / settings.cellSize);
     }
     else if (mousePos.x > window.innerWidth - settings.scrollMargin) {
-        cameraPos.x -= settings.scrollSpeed * (128 / settings.cellSize);
+        cameraPos.x += settings.scrollSpeed * (128 / settings.cellSize);
     }
 
     if (mousePos.y < settings.scrollMargin) {
-        cameraPos.y += settings.scrollSpeed * (128 / settings.cellSize);
+        cameraPos.y -= settings.scrollSpeed * (128 / settings.cellSize);
     }
     else if (mousePos.y > window.innerHeight - settings.scrollMargin) {
-        cameraPos.y -= settings.scrollSpeed * (128 / settings.cellSize);
+        cameraPos.y += settings.scrollSpeed * (128 / settings.cellSize);
     }
 
 
@@ -136,8 +136,8 @@ function draw() {
                 continue;
             }
 
-            let drawPosX = (window.innerWidth / 2) - ((x - cameraPos.x) * settings.cellSize) - (settings.cellSize / 2);
-            let drawPosY = (window.innerHeight / 2) - ((y - cameraPos.y) * settings.cellSize) - (settings.cellSize / 2);
+            let drawPosX = (window.innerWidth / 2) + ((x - cameraPos.x) * settings.cellSize) - (settings.cellSize / 2);
+            let drawPosY = (window.innerHeight / 2) + ((y - cameraPos.y) * settings.cellSize) - (settings.cellSize / 2);
 
 
 
