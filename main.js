@@ -1,13 +1,9 @@
 let canvas, ctx;
 
 let grid = []
-let cameraPos = { x: 0, y: 0 }
+let cameraPos = { x: 50, y: 50 }
 const settings = {
-    windowSizePixels: null,
-    windowSizeMap: null,
-    blockSizeScreen: null,
-    blockSizeMap: null,
-    cellSize: 256,
+    cellSize: 125,
     mapSize: {
         x: 100,
         y: 100,
@@ -46,18 +42,7 @@ window.addEventListener("load", () => {
 window.addEventListener("resize", Resize);
 
 function Resize() {
-    settings.windowSizePixels = {
-        width: window.innerWidth / settings.cellSize,
-        height: window.innerHeight / settings.cellSize
-    }
-    settings.blockSizeScreen = {
-        width: settings.cellSize / window.innerWidth,
-        height: settings.cellSize / window.innerHeight
-    }
-    settings.windowSizeMap = {
-        width: (1 / settings.blockSizeScreen.width) / settings.mapSize.x,
-        height: (1 / settings.blockSizeScreen.height) / settings.mapSize.y
-    }
+
 
 
 
@@ -83,27 +68,38 @@ function loadingDone() {
 }
 
 function update() {
-
+    // cameraPos.x += 0.01;
 }
 
 function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
-    for (let y = 0; y < grid.length; y++) {
-        const posY = (y - (grid.length / 2)) / settings.mapSize.y;
-        for (let x = 0; x < grid[y].length; x++) {
-            const posX = (x - (grid[y].length / 2)) / settings.mapSize.x;
-            if (posX < cameraPos.x - (settings.windowSizeMap.width / 2) - (1 / settings.mapSize.x) ||
-                posX > cameraPos.x + (settings.windowSizeMap.width / 2) + (1 / settings.mapSize.x) || posY < cameraPos.y - (settings.windowSizeMap.height / 2) - (1 / settings.mapSize.y) ||
-                posY > cameraPos.y + (settings.windowSizeMap.height / 2) + (1 / settings.mapSize.y)) {
-                continue;
-            }
 
-            const blockScreenPos = {
-                x: (window.innerWidth / 2) + ((posX / (settings.windowSizeMap.width / 2)) * (window.innerWidth / 2)), y: (window.innerHeight / 2) + ((posY / (settings.windowSizeMap.height / 2)) * (window.innerHeight / 2))
-            }
+    const cameraX = parseInt(cameraPos.x);
+    const cameraY = parseInt(cameraPos.y);
 
-            ctx.drawImage(grid[y][x].image, blockScreenPos.x - (settings.cellSize / 2) - 1, blockScreenPos.y - (settings.cellSize / 2) - 1, settings.cellSize + 2, settings.cellSize + 2);
+    let iteratorStartX = cameraX - parseInt((window.innerWidth / 2) / settings.cellSize) - 1;
+    let iteratorStartY = cameraY - parseInt((window.innerHeight / 2) / settings.cellSize) - 1;
+
+    let iteratorEndX = cameraX + parseInt((window.innerWidth / 2) / settings.cellSize) + 1;
+    let iteratorEndY = cameraY + parseInt((window.innerHeight / 2) / settings.cellSize) + 1;
+
+    console.log(iteratorStartX, iteratorStartY, iteratorEndX, iteratorEndY)
+
+    for (let y = iteratorStartY; y < iteratorEndY; y++) {
+        for (let x = iteratorStartX; x < iteratorEndX; x++) {
+
+            let drawPosX = (window.innerWidth / 2) - ((x - cameraPos.x) * settings.cellSize) - (settings.cellSize / 2);
+            let drawPosY = (window.innerHeight / 2) - ((x - cameraPos.x) * settings.cellSize) - (settings.cellSize / 2);
+
+
+
+            ctx.drawImage(grid[y][x].image, drawPosX, drawPosY, settings.cellSize + 2, settings.cellSize + 2);
+
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "48px serif";
+            ctx.fillText("ye", drawPosX + 50, drawPosY + 50);
         }
     }
 
