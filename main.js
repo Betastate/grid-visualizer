@@ -190,16 +190,47 @@ function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
     const transitions = grid[y][x].transitions;
 
 
-    if (grid[y - 1] && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions && grid[y - 1][x + 1]?.name === transitions) {
-        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8) + 2);
 
+
+    if (grid[y - 1] && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions && grid[y - 1][x + 1]?.name === transitions) {
+        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
     }
     else if ((grid[y] && grid[y - 1]) && grid[y][x - 1]?.name === transitions && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
         ctx.drawImage(grid[y][x].subImages[`${name}-corner`].img, drawPosX, drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2);
     }
-    // else if ((grid[y] && grid[y - 1]) && grid[y][x + 1]?.name === transitions && grid[y - 1][x + 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
-    //     ctx.drawImage(grid[y][x].subImages[`${name}-corner`].img, drawPosX + settings.cellSize, drawPosY, -((settings.cellSize / 8) + 2), (settings.cellSize / 8) + 2);
-    // }
+    else if ((grid[y] && grid[y - 1]) && grid[y][x + 1]?.name === transitions && grid[y - 1][x + 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
+        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-corner`].img, drawPosX + settings.cellSize - (settings.cellSize / 8), drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2, 90)
+    }
+    else if ((grid[y - 1] && grid[y]) &&
+        grid[y - 1][x]?.name === transitions &&
+        grid[y][x - 1]?.name !== transitions &&
+        grid[y - 1][x - 1]?.name !== transitions &&
+        grid[y - 1][x + 1]?.name !== transitions &&
+        grid[y][x + 1]?.name !== transitions) {
 
+        ctx.drawImage(grid[y][x].subImages[`${name}-edge`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
+    }
 
+}
+
+function drawRotatedImage(ctx, image, x, y, width, height, degrees) {
+    // Convert degrees to radians
+    const radians = (Math.PI / 180) * degrees;
+
+    // Save the current state of the canvas
+    ctx.save();
+
+    // Translate to the center of the image
+    const centerX = x + width / 2;
+    const centerY = y + height / 2;
+    ctx.translate(centerX, centerY);
+
+    // Rotate the canvas
+    ctx.rotate(radians);
+
+    // Draw the image, adjusting for the translation
+    ctx.drawImage(image, -width / 2, -height / 2, width, height);
+
+    // Restore the canvas to its original state
+    ctx.restore();
 }
