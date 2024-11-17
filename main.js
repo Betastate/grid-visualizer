@@ -15,9 +15,23 @@ const settings = {
 }
 const images = {
     grass: {
-        url: "img/grass.png"
+        name: "grass",
+        transitions: "water",
+        url: "img/grass.png",
+        subImages: {
+            "grass-corner": {
+                url: "img/grass-corner.png"
+            },
+            "grass-edge": {
+                url: "img/grass-edge.png"
+            },
+            "grass-edge-full": {
+                url: "img/grass-edge-full.png"
+            },
+        }
     },
     water: {
+        name: "water",
         url: "img/water.png"
     }
 };
@@ -34,18 +48,33 @@ window.addEventListener("load", () => {
     imageNames.forEach(key => {
         const theImage = images[key];
         theImage.img = new Image();
-        theImage.img.onload = () => {
-            loadedImages++;
-            if (loadedImages >= imageNames.length) {
-                loadingDone();
-            }
-        }
+        theImage.img.onload = imageLoaded;
         theImage.img.src = theImage.url;
+        //set sub images as well
+        for (subImage in theImage.subImages) {
+
+            const sb = images[key].subImages[subImage];
+            sb.img = new Image();
+            sb.img.onload = imageLoaded;
+            sb.img.src = sb.url;
+        }
     })
 
     Resize();
 });
 
+function imageLoaded() {
+    loadedImages++;
+    let subImagesCount = 0;
+    for (image in images) {
+        for (subImage in images[image]) {
+            subImagesCount++;
+        }
+    }
+    if (loadedImages >= imageNames.length) {
+        loadingDone();
+    }
+}
 
 function Resize() {
 
@@ -61,7 +90,8 @@ function generateMap() {
     for (let y = 0; y < grid.length; y += 1) {
         grid[y] = new Array(settings.mapSize.x)
         for (let x = 0; x < grid[y].length; x++) {
-            grid[y][x] = { image: images[imageNames[Math.floor(Math.random() * imageNames.length)]].img }
+            const randomImage = images[imageNames[Math.floor(Math.random() * imageNames.length)]];
+            grid[y][x] = { image: randomImage.img, name: randomImage.name, subImages: randomImage.subImages, transitions: randomImage.transitions }
         }
     }
 }
@@ -74,7 +104,7 @@ function loadingDone() {
         mousePos.y = e.clientY;
     })
     window.addEventListener("fullscreenchange", (e) => {
-        e.preventDefault();
+        Resize();
     })
     addEventListener("mousewheel", (e) => {
         const delta = e.deltaY;
@@ -143,8 +173,33 @@ function draw() {
 
             ctx.drawImage(grid[y][x].image, drawPosX, drawPosY, settings.cellSize + 2, settings.cellSize + 2);
 
+            drawSubImages(grid[y][x].subImages, x, y, drawPosX, drawPosY)
+
         }
     }
 
     window.requestAnimationFrame(draw);
+}
+
+function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
+    if (!subImages) {
+        return;
+    }
+
+    const name = grid[y][x].name;
+    const transitions = grid[y][x].transitions;
+
+
+    if (grid[y - 1] && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions && grid[y - 1][x + 1]?.name === transitions) {
+        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8) + 2);
+
+    }
+    else if ((grid[y] && grid[y - 1]) && grid[y][x - 1]?.name === transitions && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
+        ctx.drawImage(grid[y][x].subImages[`${name}-corner`].img, drawPosX, drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2);
+    }
+    // else if ((grid[y] && grid[y - 1]) && grid[y][x + 1]?.name === transitions && grid[y - 1][x + 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
+    //     ctx.drawImage(grid[y][x].subImages[`${name}-corner`].img, drawPosX + settings.cellSize, drawPosY, -((settings.cellSize / 8) + 2), (settings.cellSize / 8) + 2);
+    // }
+
+
 }
