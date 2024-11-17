@@ -191,7 +191,7 @@ function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
 
 
     if (grid[y - 1] && grid[y - 1][x]?.name === transitions) {
-        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
+        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX - 1, drawPosY - 1, settings.cellSize + 2, (settings.cellSize / 8) + 2);
     }
     if (grid[y + 1] && grid[y + 1][x]?.name === transitions) {
         drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + ((14 / 15) * settings.cellSize), settings.cellSize + 2, (settings.cellSize / 8), 180);
