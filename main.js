@@ -9,6 +9,7 @@ const settings = {
         x: 50,
         y: 20,
     },
+    mapTilesRepeting: 0.25, // 0 to 1, realisticly 0 to 0.3
     scrollSpeed: 0.02,
     scrollMargin: 30,
     mouseWheelStrength: 0.02
@@ -145,7 +146,8 @@ function generateMap() {
     for (let y = 0; y < grid.length; y += 1) {
         grid[y] = new Array(settings.mapSize.x)
         for (let x = 0; x < grid[y].length; x++) {
-            const randomImage = images[imageNames[Math.floor(Math.random() * imageNames.length)]];
+            // const randomImage = images[imageNames[Math.floor(Math.random() * imageNames.length)]];
+            const randomImage = images[imageNames[clumpyRoll(x, y, imageNames.length, settings.mapTilesRepeting)]];
             grid[y][x] = { image: randomImage.img, name: randomImage.name, subImages: randomImage.subImages, transitions: randomImage.transitions }
         }
     }
@@ -368,4 +370,23 @@ function drawRotatedImage(ctx, image, x, y, width, height, degrees) {
 
     // Restore the canvas to its original state
     ctx.restore();
+}
+
+function clumpyRoll(x, y, n, clumpFactor = 0.8) {
+    /**
+     * Generate a clumpy tile number (1 to n) for a single grid coordinate.
+     *
+     * @param {number} x - The x-coordinate of the grid (index).
+     * @param {number} y - The y-coordinate of the grid (index).
+     * @param {number} n - The number of possible tile numbers (e.g., 3 for [1, 2, 3]).
+     * @param {number} clumpFactor - A value between 0 and 1 to control clumping (lower = tighter clump).
+     * @returns {number} - A tile number (from 1 to n).
+     */
+    const noiseValue = Math.random() * (1 - clumpFactor) + clumpFactor;
+
+    // Calculate the index range based on n (e.g., [0, n-1])
+    const clumpIndex = Math.floor(noiseValue * n);
+
+    // Return a tile number between 0 and n
+    return clumpIndex;
 }
