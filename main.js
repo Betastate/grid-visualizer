@@ -9,7 +9,7 @@ const settings = {
         x: 50,
         y: 20,
     },
-    scrollSpeed: 0.05,
+    scrollSpeed: 0.02,
     scrollMargin: 30,
     mouseWheelStrength: 0.15
 }
@@ -19,14 +19,23 @@ const images = {
         transitions: "water",
         url: "img/grass.png",
         subImages: {
-            "grass-corner": {
-                url: "img/grass-corner.png"
+            "grass-straight-left": {
+                url: "img/grass-straight-left.png"
             },
-            "grass-edge": {
-                url: "img/grass-edge.png"
+            "grass-straight-right": {
+                url: "img/grass-straight-right.png"
             },
-            "grass-edge-full": {
-                url: "img/grass-edge-full.png"
+            "grass-bump-left": {
+                url: "img/grass-bump-left.png"
+            },
+            "grass-bump-right": {
+                url: "img/grass-bump-right.png"
+            },
+            "grass-edge-left": {
+                url: "img/grass-edge-left.png"
+            },
+            "grass-edge-right": {
+                url: "img/grass-edge-right.png"
             },
         }
     },
@@ -190,58 +199,79 @@ function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
     const transitions = grid[y][x].transitions;
 
 
-    if (grid[y - 1] && grid[y - 1][x]?.name === transitions) {
-        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX - 1, drawPosY - 1, settings.cellSize + 2, (settings.cellSize / 8) + 2);
-    }
-    if (grid[y + 1] && grid[y + 1][x]?.name === transitions) {
-        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + ((14 / 15) * settings.cellSize), settings.cellSize + 2, (settings.cellSize / 8), 180);
+    //Draw top subImages:
+    if (grid[y] && grid[y - 1] && grid[y - 1][x]?.name === transitions) {
 
-    }
+        if (grid[y][x - 1]?.name !== transitions && grid[y - 1][x - 1]?.name === transitions) {
+            ctx.drawImage(grid[y][x].subImages[`${name}-straight-left`].img, drawPosX - 1, drawPosY - 1, (settings.cellSize / 2 + 1), (settings.cellSize / 8) + 1);
+        }
+        else if (grid[y][x - 1]?.name !== transitions && grid[y - 1][x - 1]?.name !== transitions) {
+            ctx.drawImage(grid[y][x].subImages[`${name}-bump-left`].img, drawPosX - 1, drawPosY - 1, (settings.cellSize / 2 + 1), (settings.cellSize / 8) + 1);
+        }
+        else if (grid[y][x - 1]?.name === transitions) {
+            ctx.drawImage(grid[y][x].subImages[`${name}-edge-left`].img, drawPosX - 1, drawPosY - 1, (settings.cellSize / 2 + 1), (settings.cellSize / 8) + 1);
 
-    if ((grid[y - 1] && grid[y] && grid[y + 1]) && grid[y][x + 1]?.name === transitions) {
-        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + settings.cellSize, settings.cellSize * 2, (settings.cellSize / 8), 90);
-    }
-    if ((grid[y - 1] && grid[y] && grid[y + 1]) && grid[y][x - 1]?.name === transitions) {
-        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX - ((1 / 2) * settings.cellSize), drawPosY + ((2 / 4) * settings.cellSize), settings.cellSize, (settings.cellSize / 8), 270);
-    }
+        }
 
-
-    return;
-
-    //Transition to tile above
-    if (grid[y - 1] && grid[y - 1][x].name === name) {
-        //Tile above is the same and no transition is needed
-    }
-    else if (grid[y - 1] && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions && grid[y - 1][x + 1]?.name === transitions) {
-        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
-    }
-    else if ((grid[y] && grid[y - 1]) && (grid[y][x - 1]?.name === transitions) && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
-        ctx.drawImage(grid[y][x].subImages[`${name}-corner`].img, drawPosX, drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2);
-    }
-    else if ((grid[y] && grid[y - 1]) && (grid[y][x + 1]?.name === transitions) && grid[y - 1][x + 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
-        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-corner`].img, drawPosX + settings.cellSize - (settings.cellSize / 8), drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2, 90)
-    }
-    else if ((grid[y - 1] && grid[y]) &&
-        grid[y - 1][x]?.name === transitions &&
-        grid[y][x - 1]?.name !== transitions &&
-        grid[y - 1][x - 1]?.name !== transitions &&
-        grid[y - 1][x + 1]?.name !== transitions &&
-        grid[y][x + 1]?.name !== transitions) {
-
-        ctx.drawImage(grid[y][x].subImages[`${name}-edge`].img, drawPosX, drawPosY, settings.cellSize + 1, (settings.cellSize / 8));
+        if (grid[y][x + 1]?.name !== transitions && grid[y - 1][x + 1]?.name === transitions) {
+            ctx.drawImage(grid[y][x].subImages[`${name}-straight-right`].img, drawPosX + (settings.cellSize / 2), drawPosY - 1, (settings.cellSize / 2) + ``, (settings.cellSize / 8) + 1);
+        }
+        else if (grid[y][x + 1]?.name !== transitions && grid[y - 1][x + 1]?.name !== transitions) {
+            ctx.drawImage(grid[y][x].subImages[`${name}-bump-right`].img, drawPosX + (settings.cellSize / 2), drawPosY - 1, (settings.cellSize / 2) + ``, (settings.cellSize / 8) + 1);
+        }
+        else if (grid[y][x + 1]?.name === transitions) {
+            ctx.drawImage(grid[y][x].subImages[`${name}-edge-right`].img, drawPosX + (settings.cellSize / 2), drawPosY - 1, (settings.cellSize / 2) + ``, (settings.cellSize / 8) + 1);
+        }
     }
 
-    //Transition to tile to the right
-    if (grid[y] && grid[y][x + 1].name === name) {
-        //Tile to the right is the same and no transition is needed
-    }
-    else if ((grid[y - 1] && grid[y] && grid[y + 1]) && grid[y - 1][x + 1]?.name === transitions && grid[y][x + 1]?.name === transitions && grid[y + 1][x + 1]?.name === transitions) {
-        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + settings.cellSize, settings.cellSize * 2, (settings.cellSize / 8), 90);
-    }
-    if ((grid[y] && grid[y + 1]) && (grid[y][x + 1]?.name === transitions) && grid[y + 1][x + 1]?.name === transitions && grid[y + 1][x]?.name === transitions) {
-        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-corner`].img, drawPosX + ((7 / 8) * settings.cellSize), drawPosY + ((7 / 8) * settings.cellSize), (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2, 180)
+    //Draw right subimages:
+    if (grid[y] && grid[y - 1] && grid[y + 1] && grid[y][x + 1]?.name === transitions) {
+
+        if (grid[y - 1][x]?.name !== transitions && grid[y - 1][x + 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-straight-left`].img, drawPosX + (settings.cellSize * (15 / 16)), drawPosY - 1 + (settings.cellSize * (4 / 16)), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 90);
+        }
+        else if (grid[y - 1][x]?.name !== transitions && grid[y - 1][x + 1]?.name !== transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-bump-left`].img, drawPosX + (settings.cellSize * (15 / 16)), drawPosY - 1 + (settings.cellSize * (4 / 16)), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 90);
+        }
+        else if (grid[y - 1][x]?.name === transitions && grid[y][x + 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-left`].img, drawPosX + (settings.cellSize * (15 / 16)), drawPosY - 1 + (settings.cellSize * (5 / 16)), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 90);
+        }
+
+        if (grid[y + 1][x]?.name !== transitions && grid[y + 1][x + 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-straight-right`].img, drawPosX + (settings.cellSize * (15 / 16)), drawPosY - 3 + (settings.cellSize * (12 / 16)), ((settings.cellSize / 2) + 4), (settings.cellSize / 8) + 2, 90);
+        }
+        else if (grid[y + 1][x]?.name !== transitions && grid[y + 1][x + 1]?.name !== transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-bump-right`].img, drawPosX + (settings.cellSize * (15 / 16)), drawPosY + (settings.cellSize * (12 / 16)), ((settings.cellSize / 2) + 4), (settings.cellSize / 8) + 2, 90);
+        }
+        else if (grid[y + 1][x]?.name === transitions && grid[y][x + 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-right`].img, drawPosX + (settings.cellSize * (15 / 16)), drawPosY + (settings.cellSize * (12 / 16)), ((settings.cellSize / 2) + 4), (settings.cellSize / 8) + 2, 90);
+        }
     }
 
+    //Draw bottom subimages:
+    if (grid[y] && grid[y + 1] && grid[y + 1][x]?.name === transitions) {
+
+        if (grid[y][x + 1]?.name !== transitions && grid[y + 1][x + 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-straight-left`].img, drawPosX + ((3 / 4) * settings.cellSize), drawPosY + ((15 / 16) * settings.cellSize), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 180)
+        }
+        else if (grid[y][x + 1]?.name !== transitions && grid[y + 1][x + 1]?.name !== transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-bump-left`].img, drawPosX + ((3 / 4) * settings.cellSize), drawPosY + ((15 / 16) * settings.cellSize), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 180)
+        }
+        else if (grid[y][x + 1]?.name === transitions && grid[y][x + 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-left`].img, drawPosX + ((11 / 16) * settings.cellSize), drawPosY + ((15 / 16) * settings.cellSize), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 180)
+        }
+
+        if (grid[y][x - 1]?.name !== transitions && grid[y + 1][x - 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-straight-right`].img, drawPosX + (settings.cellSize / 4), drawPosY + ((15 / 16) * settings.cellSize), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 180)
+        }
+        else if (grid[y][x - 1]?.name !== transitions && grid[y + 1][x - 1]?.name !== transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-bump-right`].img, drawPosX + (settings.cellSize / 4), drawPosY + ((15 / 16) * settings.cellSize), ((settings.cellSize / 2) + 1), (settings.cellSize / 8) + 1, 180)
+        }
+        else if (grid[y][x - 1]?.name === transitions && grid[y][x - 1]?.name === transitions) {
+            drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-right`].img, drawPosX + ((1 / 4) * settings.cellSize), drawPosY + ((15 / 16) * settings.cellSize), (settings.cellSize / 2 + 1), (settings.cellSize / 8) + 1, 180)
+        }
+
+    }
 }
 
 function drawRotatedImage(ctx, image, x, y, width, height, degrees) {
@@ -252,8 +282,8 @@ function drawRotatedImage(ctx, image, x, y, width, height, degrees) {
     ctx.save();
 
     // Translate to the center of the image
-    const centerX = x + width / 2;
-    const centerY = y + height / 2;
+    const centerX = x;
+    const centerY = y;
     ctx.translate(centerX, centerY);
 
     // Rotate the canvas
