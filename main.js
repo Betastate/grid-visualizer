@@ -246,7 +246,7 @@ function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
 
 function drawRotatedImage(ctx, image, x, y, width, height, degrees) {
     // Convert degrees to radians
-    const radians = (Math.PI / 180) * degrees;
+    const radians = (Math.PI / 180) * degrees; 
 
     // Save the current state of the canvas
     ctx.save();
