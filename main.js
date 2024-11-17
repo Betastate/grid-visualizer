@@ -190,15 +190,35 @@ function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
     const transitions = grid[y][x].transitions;
 
 
-
-
-    if (grid[y - 1] && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions && grid[y - 1][x + 1]?.name === transitions) {
+    if (grid[y - 1] && grid[y - 1][x]?.name === transitions) {
         ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
     }
-    else if ((grid[y] && grid[y - 1]) && grid[y][x - 1]?.name === transitions && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
+    if (grid[y + 1] && grid[y + 1][x]?.name === transitions) {
+        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + ((14 / 15) * settings.cellSize), settings.cellSize + 2, (settings.cellSize / 8), 180);
+
+    }
+
+    if ((grid[y - 1] && grid[y] && grid[y + 1]) && grid[y][x + 1]?.name === transitions) {
+        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + settings.cellSize, settings.cellSize * 2, (settings.cellSize / 8), 90);
+    }
+    if ((grid[y - 1] && grid[y] && grid[y + 1]) && grid[y][x - 1]?.name === transitions) {
+        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX - ((1 / 2) * settings.cellSize), drawPosY + ((2 / 4) * settings.cellSize), settings.cellSize, (settings.cellSize / 8), 270);
+    }
+
+
+    return;
+
+    //Transition to tile above
+    if (grid[y - 1] && grid[y - 1][x].name === name) {
+        //Tile above is the same and no transition is needed
+    }
+    else if (grid[y - 1] && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions && grid[y - 1][x + 1]?.name === transitions) {
+        ctx.drawImage(grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
+    }
+    else if ((grid[y] && grid[y - 1]) && (grid[y][x - 1]?.name === transitions) && grid[y - 1][x - 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
         ctx.drawImage(grid[y][x].subImages[`${name}-corner`].img, drawPosX, drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2);
     }
-    else if ((grid[y] && grid[y - 1]) && grid[y][x + 1]?.name === transitions && grid[y - 1][x + 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
+    else if ((grid[y] && grid[y - 1]) && (grid[y][x + 1]?.name === transitions) && grid[y - 1][x + 1]?.name === transitions && grid[y - 1][x]?.name === transitions) {
         drawRotatedImage(ctx, grid[y][x].subImages[`${name}-corner`].img, drawPosX + settings.cellSize - (settings.cellSize / 8), drawPosY, (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2, 90)
     }
     else if ((grid[y - 1] && grid[y]) &&
@@ -208,7 +228,18 @@ function drawSubImages(subImages, x, y, drawPosX, drawPosY) {
         grid[y - 1][x + 1]?.name !== transitions &&
         grid[y][x + 1]?.name !== transitions) {
 
-        ctx.drawImage(grid[y][x].subImages[`${name}-edge`].img, drawPosX, drawPosY, settings.cellSize + 2, (settings.cellSize / 8));
+        ctx.drawImage(grid[y][x].subImages[`${name}-edge`].img, drawPosX, drawPosY, settings.cellSize + 1, (settings.cellSize / 8));
+    }
+
+    //Transition to tile to the right
+    if (grid[y] && grid[y][x + 1].name === name) {
+        //Tile to the right is the same and no transition is needed
+    }
+    else if ((grid[y - 1] && grid[y] && grid[y + 1]) && grid[y - 1][x + 1]?.name === transitions && grid[y][x + 1]?.name === transitions && grid[y + 1][x + 1]?.name === transitions) {
+        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-edge-full`].img, drawPosX, drawPosY + settings.cellSize, settings.cellSize * 2, (settings.cellSize / 8), 90);
+    }
+    if ((grid[y] && grid[y + 1]) && (grid[y][x + 1]?.name === transitions) && grid[y + 1][x + 1]?.name === transitions && grid[y + 1][x]?.name === transitions) {
+        drawRotatedImage(ctx, grid[y][x].subImages[`${name}-corner`].img, drawPosX + ((7 / 8) * settings.cellSize), drawPosY + ((7 / 8) * settings.cellSize), (settings.cellSize / 8) + 2, (settings.cellSize / 8) + 2, 180)
     }
 
 }
