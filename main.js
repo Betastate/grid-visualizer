@@ -41,7 +41,28 @@ const images = {
     },
     water: {
         name: "water",
-        url: "img/water.png"
+        transitions: "rock",
+        url: "img/water.png",
+        subImages: {
+            "water-straight-left": {
+                url: "img/water-straight-left.png"
+            },
+            "water-straight-right": {
+                url: "img/water-straight-right.png"
+            },
+            "water-bump-left": {
+                url: "img/water-bump-left.png"
+            },
+            "water-bump-right": {
+                url: "img/water-bump-right.png"
+            },
+            "water-edge-left": {
+                url: "img/water-edge-left.png"
+            },
+            "water-edge-right": {
+                url: "img/water-edge-right.png"
+            },
+        }
     },
     rock: {
         name: "rock",
