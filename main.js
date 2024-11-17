@@ -11,7 +11,7 @@ const settings = {
     },
     scrollSpeed: 0.02,
     scrollMargin: 30,
-    mouseWheelStrength: 0.15
+    mouseWheelStrength: 0.02
 }
 const images = {
     grass: {
@@ -42,6 +42,31 @@ const images = {
     water: {
         name: "water",
         url: "img/water.png"
+    },
+    rock: {
+        name: "rock",
+        transitions: "grass",
+        url: "img/rock.png",
+        subImages: {
+            "rock-straight-left": {
+                url: "img/rock-straight-left.png"
+            },
+            "rock-straight-right": {
+                url: "img/rock-straight-right.png"
+            },
+            "rock-bump-left": {
+                url: "img/rock-bump-left.png"
+            },
+            "rock-bump-right": {
+                url: "img/rock-bump-right.png"
+            },
+            "rock-edge-left": {
+                url: "img/rock-edge-left.png"
+            },
+            "rock-edge-right": {
+                url: "img/rock-edge-right.png"
+            },
+        }
     }
 };
 const imageNames = Object.keys(images);
