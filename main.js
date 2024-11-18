@@ -9,7 +9,7 @@ const settings = {
         x: 50,
         y: 20,
     },
-    mapTilesRepeting: 0.25, // 0 to 1, realisticly 0 to 0.3
+    mapTilesRepeting: 0.11, // 0 to 1, realisticly 0 to 0.3
     scrollSpeed: 0.02,
     scrollMargin: 30,
     mouseWheelStrength: 0.02
@@ -372,6 +372,7 @@ function drawRotatedImage(ctx, image, x, y, width, height, degrees) {
     ctx.restore();
 }
 
+let clump = null;
 function clumpyRoll(x, y, n, clumpFactor = 0.8) {
     /**
      * Generate a clumpy tile number (1 to n) for a single grid coordinate.
@@ -386,6 +387,13 @@ function clumpyRoll(x, y, n, clumpFactor = 0.8) {
 
     // Calculate the index range based on n (e.g., [0, n-1])
     const clumpIndex = Math.floor(noiseValue * n);
+
+    if (clump) {
+        if (clump === clumpIndex && Math.random > 0.125) {
+            return clumpyRoll(x, y, n, settings.mapTilesRepeting);
+        }
+    }
+    clump = clumpIndex;
 
     // Return a tile number between 0 and n
     return clumpIndex;
